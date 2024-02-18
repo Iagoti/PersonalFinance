@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:personal_finance/screens/sign_up.dart';
+import 'package:personal_finance/utils/appvalidator.dart';
 
-class SignUpView extends StatelessWidget {
-  SignUpView({super.key});
+class LoginView extends StatelessWidget {
+  LoginView({super.key});
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -15,41 +17,7 @@ class SignUpView extends StatelessWidget {
     }
   }
 
-  String? validateUserName(value) {
-    if (value!.isEmpty) {
-      return 'Please enter a username';
-    }
-    return null;
-  }
-
-  String? validateEmail(value) {
-    if (value!.isEmpty) {
-      return 'Please enter an email';
-    }
-    RegExp emailRegExp = RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-    if (!emailRegExp.hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
-
-  String? validatePhoneNumber(value) {
-    if (value!.isEmpty) {
-      return 'Please enter a phone number';
-    }
-    if (value.length != 10) {
-      return 'Please enter a 10-digit phone number';
-    }
-    return null;
-  }
-
-  String? validatePassword(value) {
-    if (value!.isEmpty) {
-      return 'Please enter a password';
-    }
-    return null;
-  }
+  var appValidator = AppValidator();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +35,7 @@ class SignUpView extends StatelessWidget {
                 SizedBox(
                   width: 250,
                   child: Text(
-                    "Create new account",
+                    "Login account",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -79,30 +47,11 @@ class SignUpView extends StatelessWidget {
                   height: 50.0,
                 ),
                 TextFormField(
-                  style: TextStyle(color: Colors.white),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: buildInputDecoration('User Name', Icons.person),
-                  validator: validateUserName,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: buildInputDecoration('Email', Icons.email),
-                  validator: validateEmail,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
-                  style: TextStyle(color: Colors.white),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: buildInputDecoration('Phone Number', Icons.phone),
-                  validator: validatePhoneNumber,
+                  validator: appValidator.validateEmail,
                 ),
                 SizedBox(
                   height: 16.0,
@@ -112,7 +61,7 @@ class SignUpView extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: buildInputDecoration('Password', Icons.lock),
-                  validator: validatePassword,
+                  validator: appValidator.validatePassword,
                 ),
                 SizedBox(
                   height: 40.0,
@@ -132,9 +81,15 @@ class SignUpView extends StatelessWidget {
                   height: 30.0,
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SignUpView(),
+                        ),
+                      );
+                    },
                     child: Text(
-                      "Login",
+                      "Create new account",
                       style: TextStyle(color: Color(0xfff15900), fontSize: 20),
                     ))
               ],

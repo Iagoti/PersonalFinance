@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:personal_finance/sign_up.dart';
+import 'package:personal_finance/screens/sign_up.dart';
 
 void main() {
   runApp(const MyApp());

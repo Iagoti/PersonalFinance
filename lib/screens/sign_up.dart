@@ -2,18 +2,50 @@
 
 import 'package:flutter/material.dart';
 import 'package:personal_finance/screens/login.dart';
+import 'package:personal_finance/services/auth_service.dart';
 import 'package:personal_finance/utils/appvalidator.dart';
 
-class SignUpView extends StatelessWidget {
+class SignUpView extends StatefulWidget {
   SignUpView({super.key});
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  final userNameController = TextEditingController();
+
+  final emailController = TextEditingController();
+
+  final phoneController = TextEditingController();
+
+  final passwordController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  var authService = AuthService();
+  var isLoader = false;
+
   Future<void> submitForm() async {
     if (formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
-        const SnackBar(content: Text("Form submit sucess")),
-      );
+      setState(() {
+        isLoader = true;
+      });
+
+      var data = {
+        "username": userNameController.text,
+        "email": emailController.text,
+        "phone": phoneController.text,
+        "password": passwordController.text
+      };
+
+      await authService.createUser(data, context);
+      setState(() {
+        isLoader = false;
+      });
+      // ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
+      //   const SnackBar(content: Text("Form submit sucess")),
+      // );
     }
   }
 
@@ -47,6 +79,7 @@ class SignUpView extends StatelessWidget {
                   height: 50.0,
                 ),
                 TextFormField(
+                  controller: userNameController,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: buildInputDecoration('User Name', Icons.person),
@@ -56,6 +89,7 @@ class SignUpView extends StatelessWidget {
                   height: 16.0,
                 ),
                 TextFormField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -66,6 +100,7 @@ class SignUpView extends StatelessWidget {
                   height: 16.0,
                 ),
                 TextFormField(
+                  controller: phoneController,
                   keyboardType: TextInputType.phone,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -76,6 +111,7 @@ class SignUpView extends StatelessWidget {
                   height: 16.0,
                 ),
                 TextFormField(
+                  controller: passwordController,
                   keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -91,11 +127,15 @@ class SignUpView extends StatelessWidget {
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 204, 89, 0)),
-                        onPressed: submitForm,
-                        child: Text("Create",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 252, 251, 251),
-                                fontSize: 20)))),
+                        onPressed: () {
+                          isLoader ? print("Carregando...") : submitForm();
+                        },
+                        child: isLoader
+                            ? Center(child: CircularProgressIndicator())
+                            : Text("Create",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 252, 251, 251),
+                                    fontSize: 20)))),
                 SizedBox(
                   height: 30.0,
                 ),

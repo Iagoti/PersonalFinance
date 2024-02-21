@@ -2,18 +2,41 @@
 
 import 'package:flutter/material.dart';
 import 'package:personal_finance/screens/sign_up.dart';
+import 'package:personal_finance/services/auth_service.dart';
 import 'package:personal_finance/utils/appvalidator.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  var authService = AuthService();
+  var isLoader = false;
 
   Future<void> submitForm() async {
     if (formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(formKey.currentContext!).showSnackBar(
-        const SnackBar(content: Text("Form submit sucess")),
-      );
+      setState(() {
+        isLoader = true;
+      });
+
+      var data = {
+        "email": emailController.text,
+        "password": passwordController.text
+      };
+
+      await authService.login(data, context);
+      setState(() {
+        isLoader = false;
+      });
     }
   }
 
@@ -47,6 +70,7 @@ class LoginView extends StatelessWidget {
                   height: 50.0,
                 ),
                 TextFormField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -57,6 +81,7 @@ class LoginView extends StatelessWidget {
                   height: 16.0,
                 ),
                 TextFormField(
+                  controller: passwordController,
                   keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.white),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -72,11 +97,15 @@ class LoginView extends StatelessWidget {
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 204, 89, 0)),
-                        onPressed: submitForm,
-                        child: Text("Create",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 252, 251, 251),
-                                fontSize: 20)))),
+                        onPressed: () {
+                          isLoader ? print("Carregando...") : submitForm();
+                        },
+                        child: isLoader
+                            ? Center(child: CircularProgressIndicator())
+                            : Text("Login",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 252, 251, 251),
+                                    fontSize: 20)))),
                 SizedBox(
                   height: 30.0,
                 ),

@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:personal_finance/screens/dashboard.dart';
 import 'package:personal_finance/screens/login.dart';
 import 'package:personal_finance/services/auth_service.dart';
 import 'package:personal_finance/utils/appvalidator.dart';
@@ -40,6 +41,12 @@ class _SignUpViewState extends State<SignUpView> {
       };
 
       await authService.createUser(data, context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Dashboard(),
+        ),
+      );
       setState(() {
         isLoader = false;
       });
@@ -141,7 +148,8 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).push(
+                      Navigator.push(
+                        context,
                         MaterialPageRoute(
                           builder: (context) => LoginView(),
                         ),

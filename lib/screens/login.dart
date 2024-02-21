@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:personal_finance/screens/dashboard.dart';
 import 'package:personal_finance/screens/sign_up.dart';
 import 'package:personal_finance/services/auth_service.dart';
 import 'package:personal_finance/utils/appvalidator.dart';
@@ -34,6 +35,7 @@ class _LoginViewState extends State<LoginView> {
       };
 
       await authService.login(data, context);
+
       setState(() {
         isLoader = false;
       });
